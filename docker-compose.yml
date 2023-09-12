@@ -1,0 +1,39 @@
+version: '3'
+services:
+    backend-js:
+        build:
+            context: ./api-js
+            dockerfile: Dockerfile
+        environment:
+            - DSN=mongodb://mongodb:27017/employees
+        volumes:
+            - ./api-js/:/app/
+            - /app/node_modules/
+        ports:
+            - 1337:1337
+        links:
+            - mongodb
+        command: "npm start"
+
+    test:
+        build:
+            context: ./api-js
+            dockerfile: Dockerfile
+        environment:
+            - DSN_TEST=mongodb://mongodb:27017/test
+        volumes:
+            - ./api-js/:/app/
+            - /app/node_modules/
+        links:
+            - mongodb
+        command: "npm run test"
+
+    mongodb:
+        image: mongo
+        environment:
+            - MONGO_DATA_DIR=/data/db
+        volumes:
+            - ./data/db:/data/db
+        ports:
+            - 27017:27017
+        command: mongod --quiet --logpath /dev/null
