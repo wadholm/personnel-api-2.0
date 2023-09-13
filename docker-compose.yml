@@ -14,6 +14,21 @@ services:
         links:
             - mongodb
         command: "npm start"
+    
+    backend-ts:
+        build:
+            context: ./api-typescript
+            dockerfile: Dockerfile
+        environment:
+            - DSN=mongodb://mongodb:27017/employees
+        volumes:
+            - ./api-typescript/:/app/
+            - /app/node_modules/
+        ports:
+            - 1338:1338
+        links:
+            - mongodb
+        command: "npm run dev"
 
     test:
         build:
